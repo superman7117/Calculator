@@ -3,7 +3,7 @@ console.log('working')
 
 
 document.addEventListener('DOMContentLoaded', function (){
-var currentDisplay = document.getElementById('display').innerHTML;
+var currentDisplay = "0";
 var currentOperator = '';
 var totalHistory = [];
 var lastInput = 0;
@@ -15,12 +15,15 @@ for(var i = 0; i < numberButtons.length; i++) {
 }
 function numberClicked(event) {
   var button = event.target.innerHTML;
+  if (currentDisplay === '0' && button === '0'){
+    return;
+  }
   if (theDot == true && button === '.') {
     return;
   }
-  else if (currentDisplay === '0' && button === '.') {
-    theDot = true;
+  else if ((currentDisplay === '0' || currentDisplay === lastInput) && button === '.') {
     catHolder.push("0"+button);
+    theDot = true;
   }
   else{ catHolder.push(button)}
   currentDisplay = catHolder.join('')
@@ -37,7 +40,6 @@ function operatorClicked(event) {
     case '=':
     catHolder = [];
     var answer = parseFloat(lastInput)+currentOperator+parseFloat(currentDisplay);
-
     currentDisplay = eval(answer);
     totalHistory.push(currentDisplay);
     document.getElementById('display').innerHTML = currentDisplay;
@@ -46,28 +48,32 @@ function operatorClicked(event) {
     lastInput = parseFloat(currentDisplay);
     currentOperator = '+';
     catHolder = [];
-    currentDisplay = 0;
+    theDot = false;
+    currentDisplay = lastInput;
     document.getElementById('display').innerHTML = currentDisplay;
         break;
     case '-':
     lastInput = parseFloat(currentDisplay);
     currentOperator = '-';
     catHolder = [];
-    currentDisplay = 0;
+    theDot = false;
+    currentDisplay = lastInput;
     document.getElementById('display').innerHTML = currentDisplay;
         break;
     case 'X':
     lastInput = parseFloat(currentDisplay);
      currentOperator = '*';
+     theDot = false;
     catHolder = [];
-    currentDisplay = 0;
+    currentDisplay = lastInput;
     document.getElementById('display').innerHTML = currentDisplay;
         break;
     case '/':
     lastInput = parseFloat(currentDisplay);
     currentOperator = '/';
     catHolder = [];
-    currentDisplay = 0;
+    theDot = false;
+    currentDisplay = lastInput;
     document.getElementById('display').innerHTML = currentDisplay;
         break;
     case '%':
@@ -80,7 +86,8 @@ function operatorClicked(event) {
         break;
     case 'C':
         catHolder = [];
-        currentDisplay = 0;
+        currentDisplay = '0';
+        theDot = false;
         document.getElementById('display').innerHTML = currentDisplay;
         currentDisplay = document.getElementById('display').innerHTML;
         break;
